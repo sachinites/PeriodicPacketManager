@@ -97,7 +97,7 @@ ppm_outbound_protocol_db_t *
 ppm_is_proto_registered(const char * proto_name);
 
 ppm_outbound_rule_t *
-ppm_is_pkt_registered(const char * proto_name, 
+ppm_is_outbound_pkt_registered(const char * proto_name, 
 		      const ppm_outbound_pkt_id_t pkt_id, 
 		      ppm_outbound_protocol_db_t **proto_db);
 

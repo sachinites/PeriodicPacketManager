@@ -29,7 +29,7 @@ ppm_is_proto_registered(const char * proto_name){
 }
 
 ppm_outbound_rule_t *
-ppm_is_pkt_registered(const char * proto_name, 
+ppm_is_outbound_pkt_registered(const char * proto_name, 
 		      const ppm_outbound_pkt_id_t pkt_id, 
 		      ppm_outbound_protocol_db_t **proto_db){
 
@@ -73,7 +73,7 @@ ppm_add_outbound_rule(const char *proto_name, ppm_outbound_rule_t *outbound_rule
 	assert(ppm_outb_gl_db);
 	ppm_outbound_protocol_db_t *proto_db = NULL;
 
-	if(!ppm_is_pkt_registered(proto_name, outbound_rule->pkt_id, &proto_db)){
+	if(!ppm_is_outbound_pkt_registered(proto_name, outbound_rule->pkt_id, &proto_db)){
 		printf("%s() : Error : Attempt to add a duplicate rule for protocol : %s, pkt_id : %s",
 			 __FUNCTION__, proto_name, ppm_get_str_enum(outbound_rule->pkt_id));
 		return FALSE;
@@ -89,13 +89,14 @@ ppm_free_outbound_rule(ppm_outbound_rule_t *rule){
 	free(rule->pkt);
 	ll_t *oif_list = rule->oif_list;
 
-	unsigned int i = 0;
+	unsigned int i = 0, node_count = 0;
 	singly_ll_node_t *head = NULL, *next = NULL;
 	ppm_in_out_if_t *intf = NULL;
 
 	head =  GET_HEAD_SINGLY_LL(oif_list);
+	node_count = GET_NODE_COUNT_SINGLY_LL(oif_list);
 
-	for(; i <  GET_NODE_COUNT_SINGLY_LL(oif_list); i++){
+	for(; i < node_count; i++){
 		next = GET_NEXT_NODE_SINGLY_LL(head);
 		intf = (ppm_in_out_if_t *)head->data;
 		if(intf->ref_count > 1){
@@ -105,6 +106,7 @@ ppm_free_outbound_rule(ppm_outbound_rule_t *rule){
 		}
 
 		free(intf);
+		singly_ll_remove_node(oif_list, head);
 		free(head);
 		head = next;		
 	}
@@ -121,7 +123,7 @@ ppm_remove_outbound_rule(const char *proto_name, ppm_outbound_pkt_id_t pkt_id){
 	ppm_outbound_protocol_db_t *proto_db = NULL;
 	ppm_outbound_rule_t *pkt_out_rule = NULL;
 
-	if(!(pkt_out_rule = ppm_is_pkt_registered(proto_name, pkt_id, &proto_db))){
+	if(!(pkt_out_rule = ppm_is_outbound_pkt_registered(proto_name, pkt_id, &proto_db))){
 		printf("%s() : Warning :  Attempt to remove non existing rule for protocol : %s, pkt_id : %s",
 			 __FUNCTION__, proto_name, ppm_get_str_enum(pkt_id));
 		return TRUE;
@@ -139,7 +141,7 @@ ppm_update_outbound_rule(const char *proto_name, ppm_outbound_rule_t *outbound_n
 	ppm_outbound_rule_t *pkt_out_rule = NULL;
 
 
-	if(!(pkt_out_rule = ppm_is_pkt_registered(proto_name, outbound_new_rule->pkt_id, &proto_db))){
+	if(!(pkt_out_rule = ppm_is_outbound_pkt_registered(proto_name, outbound_new_rule->pkt_id, &proto_db))){
 		printf("%s() : Warning :  Attempt to update non-existing rule for protocol : %s, pkt_id : %s",
 			 __FUNCTION__, proto_name, ppm_get_str_enum(outbound_new_rule->pkt_id));
 		return FALSE;
@@ -185,7 +187,10 @@ ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 		printf("OIF list : NULL\n");
 
 	printf("Now Printing the packet content :\n");
-	rule->pkt_display_fn(rule->pkt, rule->pkt_size);
+	if(rule->pkt_display_fn)
+		rule->pkt_display_fn(rule->pkt, rule->pkt_size);
+	else
+		printf("pkt display fn not registered with PPM")
 }
 
 void
