@@ -7,7 +7,7 @@
 
 typedef struct _isis_level1_lan_adj_oif_t{
 	ll_t *adj_list;
-} level_adj_oif_t;
+} isis_level1_adj_oif_t;
 
 
 typedef struct _isis_level2_lan_adj_oif_t{

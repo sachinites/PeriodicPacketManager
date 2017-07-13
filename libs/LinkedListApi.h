@@ -8,10 +8,7 @@
 #define GET_NODE_COUNT_SINGLY_LL(ll) (ll->node_count)
 #define GET_NEXT_NODE_SINGLY_LL(node) (node->next)
 
-typedef enum{
-    LL_FALSE,
-    LL_TRUE
-} bool_t;
+#include "../common_str.h"
 
 typedef struct LL_Node{
     void *data;
@@ -36,4 +33,6 @@ void delete_singly_ll(ll_t *ll);
 int singly_ll_delete_node(ll_t *ll, singly_ll_node_t *node);
 unsigned int singly_ll_delete_node_by_value(ll_t *ll, void *data, int size);
 singly_ll_node_t *singly_ll_get_node_by_data_ptr(ll_t *ll, void *data);
+unsigned int singly_ll_remove_node_by_dataptr(ll_t *ll, void *data);
+void* singly_ll_lookup_by_key(ll_t *ll, const char *keyptr, unsigned int key_size, unsigned int key_offset);
 #endif

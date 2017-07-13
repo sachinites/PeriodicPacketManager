@@ -127,6 +127,20 @@ singly_ll_delete_node_by_value(ll_t *ll, void *data, int size){
     return curren_node_count - GET_NODE_COUNT_SINGLY_LL(ll);
 }
 
+unsigned int
+singly_ll_remove_node_by_dataptr(ll_t *ll, void *data){
+    if(!ll || !GET_HEAD_SINGLY_LL(ll)) return 0;
+    unsigned int curren_node_count = GET_NODE_COUNT_SINGLY_LL(ll);
+    singly_ll_node_t* trav = GET_HEAD_SINGLY_LL(ll);
+    while(trav != NULL){
+        if(trav->data == data){
+            singly_ll_remove_node(ll, trav);
+            return curren_node_count - GET_NODE_COUNT_SINGLY_LL(ll);
+        }
+        trav = trav->next;
+    }
+    return curren_node_count - GET_NODE_COUNT_SINGLY_LL(ll);
+}
 
 unsigned int
 singly_ll_remove_node_by_value(ll_t *ll, void *data, int size){
@@ -182,8 +196,8 @@ bool_t
 is_singly_ll_empty(ll_t *ll){
     if(!ll) assert(0);
     if(ll->node_count == 0)
-        return LL_TRUE;
-    return LL_FALSE;
+        return TRUE;
+    return FALSE;
 }
 
 void 
@@ -228,7 +242,27 @@ delete_singly_ll(ll_t *ll){
 }
 
 
+void* singly_ll_lookup_by_key(ll_t *ll, 
+			      const char *keyptr, 
+			      unsigned int key_size, 
+			      unsigned int key_offset){
+	if(!ll || !keyptr || !key_size)
+		assert(0);
 
+	unsigned int i = 0;
+	singly_ll_node_t *head = NULL;
+	char *data = NULL;
+
+	head = GET_HEAD_SINGLY_LL(ll);
+
+	for(; i < GET_NODE_COUNT_SINGLY_LL(ll); i++){
+		data = (char *)head->data;		
+		if(memcmp(data + key_offset, keyptr, key_size) == 0)
+			return data;
+		head = GET_NEXT_NODE_SINGLY_LL(head);
+	}
+	return NULL;
+}
 
 #if 0
 int 

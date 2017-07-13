@@ -3,20 +3,20 @@
 
 #include <pthread.h>
 
-#ifndef TRUE
-#define TRUE 1
+#ifndef TH_TRUE
+#define TH_TRUE 1
 #endif
 
-#ifndef FALSE
-#define FALSE 0
+#ifndef TH_FALSE
+#define TH_FALSE 0
 #endif
 
-#ifndef SUCCESS
-#define SUCCESS 0
+#ifndef TH_SUCCESS
+#define TH_SUCCESS 0
 #endif
 
-#ifndef FAILURE
-#define FAILURE -1
+#ifndef TH_FAILURE
+#define TH_FAILURE -1
 #endif
 
 #define MAX_POOL_SIZE 100
