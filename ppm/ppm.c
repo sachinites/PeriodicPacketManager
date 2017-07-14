@@ -190,7 +190,7 @@ ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 	if(rule->pkt_display_fn)
 		rule->pkt_display_fn(rule->pkt, rule->pkt_size);
 	else
-		printf("pkt display fn not registered with PPM")
+		printf("pkt display fn not registered with PPM");
 }
 
 void

@@ -5,9 +5,6 @@
 #include "../common_str.h"
 #include "../ppm_client/ppm_client.h"
 
-#define PPM_MAX_PROTO_NAME_SIZE	64
-#define PPM_IF_NAME_SIZE	32
-
 typedef void (*emit_fn_t)(char *, unsigned int, unsigned int *, unsigned int);
 
 

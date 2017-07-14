@@ -1,8 +1,9 @@
 /*This file defines the behavior how the particular outbound ISIS pkt type should be treated by PPM*/
 
 #include "ppm.h"
+#include "../ppm_client/ppm_pkt_enums.h"
 
-/*If ISIS pkt type is L1 LAN hellos*/
+/*If ISIS pkt type is L1 LAN hellos. Below is the function*/
 static void
 isis_ppm_outbound_level1_lan_hello(char *pkt_buf, 
 				   unsigned int size, 
