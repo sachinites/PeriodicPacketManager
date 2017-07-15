@@ -164,7 +164,7 @@ add_thread_to_pool(blocked_pool_t *block_pool , _pthread_t *thread)
     }
 }
 
-void pthread_init(_pthread_t *_pthread, unsigned int tid, unsigned int JOINABLE)
+void pthread_initialize(_pthread_t *_pthread, unsigned int tid, unsigned int JOINABLE)
 {
     _pthread->selfid = tid;
     pthread_attr_init(&_pthread->attr);

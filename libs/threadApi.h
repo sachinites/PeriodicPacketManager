@@ -77,7 +77,7 @@ void
 signal_t (_pthread_t *signalled_thread);
 
 void 
-pthread_init(_pthread_t *_pthread, unsigned int tid, unsigned int JOINABLE);
+pthread_initialize(_pthread_t *_pthread, unsigned int tid, unsigned int JOINABLE);
 
 void 
 cleanup_pthread(_pthread_t *thread);

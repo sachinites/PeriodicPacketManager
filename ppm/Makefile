@@ -3,8 +3,8 @@ CFLAGS=-g -Wall
 STANDARD_LIBS=-lpthread
 PPM_OBJ=ppm.o ppm_main.o
 LIBS_OBJ=libs/LinkedListApi.o libs/threadApi.o libs/WheelTimer.o
-PPM_LIBS=../libs/libs.a
-PPM_CLIENT_LIBS=../ppm_client/ppm_client.a
+PPM_LIBS=../libs/libsulibs.a
+PPM_CLIENT_LIBS=../ppm_client/libppm_client.a
 INCLUDES=-I . -I ../libs -I ../ppm_client
 TARGET:exe ${PPM_LIBS} ${PPM_CLIENT_LIBS}
 
@@ -18,7 +18,7 @@ ${PPM_LIBS}:
 ${PPM_CLIENT_LIBS}:
 	(cd ../ppm_client; make)
 exe:${PPM_LIBS} ${PPM_OBJ} ${STANDARD_LIBS} ${PPM_CLIENT_LIBS} 
-	${CC} ${CFLAGS} ${PPM_OBJ} -o exe -L . ${PPM_LIBS} ${PPM_CLIENT_LIBS} ${STANDARD_LIBS}
+	${CC} ${CFLAGS} ${PPM_OBJ} -o exe -L ../ppm_client -lppm_client -L ../libs -lsulibs ${STANDARD_LIBS}
 clean:
 	rm *.o
 	(cd ../libs; make clean)

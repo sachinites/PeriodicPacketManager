@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <assert.h>
 
 ppm_input_struct_t *
 ppm_get_new_ppm_input_structure(const ppm_outbound_pkt_id_t pkt_id,

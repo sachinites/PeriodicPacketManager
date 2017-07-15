@@ -6,14 +6,21 @@
 #include <string.h>
 
 ppm_outbound_gl_db_t* ppm_outb_gl_db;
+extern void ppm_client_init_lc_ppm_reachability_info();
+extern void ppm_client_init_socket();
+
 
 void
 ppm_init(){
         static char only_once = 0;
         if(only_once == 0){
+                only_once = 1;
                 ppm_outb_gl_db = calloc(1,sizeof(ppm_outbound_gl_db_t));
                 ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();
-                only_once = 1;
+
+		ppm_client_init_lc_ppm_reachability_info();
+		ppm_client_init_socket();
+		
         }
         else
                 assert(0);

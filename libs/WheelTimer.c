@@ -21,7 +21,7 @@ init_wheel_timer(int wheel_size, int clock_tic_interval){
 
 	pthread_mutex_init(&wt->wheel_timer_mutex, NULL);
 	wt->wheel_thread = calloc(1, sizeof(_pthread_t));
-	pthread_init(wt->wheel_thread, 0, TH_DETACHED);
+	pthread_initialize(wt->wheel_thread, 0, TH_DETACHED);
 
 	int i = 0;
 	for(; i < wheel_size; i++)

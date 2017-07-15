@@ -3,7 +3,7 @@ CC=gcc
 CFLAGS=-Wall -g
 INCLUDES=-I .
 OBJ=WheelTimer.o threadApi.o LinkedListApi.o
-TARGET=libs.a
+TARGET=libsulibs.a
 ${TARGET}:$(OBJ)
 	ar rs ${TARGET} $(OBJ)
 %.o:%.c

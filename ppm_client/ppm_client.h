@@ -27,7 +27,7 @@ typedef struct _ppm_input_struct{
 	ppm_outbound_pkt_id_t pkt_id;
 	char proto_name[PPM_MAX_PROTO_NAME_SIZE];
 	unsigned short pkt_size;	/*Size of the pkt*/
-	char *pkt;			/*Pkt buffer*/
+	char pkt[MTU_SIZE];			/*Pkt buffer*/
 	unsigned int time_interval;
 	char is_periodic;
 	unsigned int egress_intf_cnt;
