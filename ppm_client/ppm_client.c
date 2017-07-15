@@ -4,6 +4,9 @@
 #include <stdlib.h>
 #include <assert.h>
 
+extern unsigned int 
+ppm_client_send_msg_to_ppm(const char *msg, unsigned int msg_size);
+
 ppm_input_struct_t *
 ppm_get_new_ppm_input_structure(const ppm_outbound_pkt_id_t pkt_id,
                             const char *proto_name,
@@ -97,7 +100,22 @@ ppm_update_packet_buffer(const ppm_outbound_pkt_id_t pkt_id, const char *proto_n
 
 void
 ppm_install_new_outbound_rule(ppm_input_struct_t *ppm_input_struct_info){
+	
+	if(!ppm_input_struct_info) return;
+	unsigned int rc = 0;
 
+	unsigned int msg_size = sizeof(ppm_msg_hdr_t) + sizeof(ppm_input_struct_t) +
+				(ppm_input_struct_info->egress_intf_cnt*sizeof(ppm_input_struct_info->ifindex_array[0]));
+
+	ppm_msg_hdr_t *ppm_install_msg = 
+			calloc(1, msg_size);
+
+	ppm_install_msg->ppm_msg_type = PPM_INSTALL_NEW_RULE;
+	memcpy(ppm_install_msg + 1, ppm_input_struct_info, msg_size - sizeof(ppm_msg_hdr_t));
+	
+	rc = ppm_client_send_msg_to_ppm((char *)ppm_install_msg, msg_size);	
+	printf("%s() : %u bytes sent to ppm\n", __FUNCTION__, msg_size);
+	 
 }
 
 void

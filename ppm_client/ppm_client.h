@@ -20,7 +20,6 @@ typedef enum{
 
 typedef struct ppm_msg_hdr{
 	PPM_INPUT_MSG_TYPE ppm_msg_type;
-	unsigned int msg_size;/*payload size*/
 } ppm_msg_hdr_t;
 
 typedef struct _ppm_input_struct{

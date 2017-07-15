@@ -29,41 +29,41 @@ ppm_client_init_lc_ppm_reachability_info(){
 
 	
 	ppm_lc_reachability_info.dest_addr[1].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 201;
+	ppm_lc_reachability_info.dest_addr[1].sin_port	      = 201;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[1].sin_addr);
 
 
 	ppm_lc_reachability_info.dest_addr[2].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 202;
+	ppm_lc_reachability_info.dest_addr[2].sin_port	      = 202;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[2].sin_addr);
 	
 	ppm_lc_reachability_info.dest_addr[3].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 203;
+	ppm_lc_reachability_info.dest_addr[3].sin_port	      = 203;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[3].sin_addr);
 
 	ppm_lc_reachability_info.dest_addr[4].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 204;
+	ppm_lc_reachability_info.dest_addr[4].sin_port	      = 204;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[4].sin_addr);
 
 
 	ppm_lc_reachability_info.dest_addr[5].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 205;
+	ppm_lc_reachability_info.dest_addr[5].sin_port	      = 205;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[5].sin_addr);
 
 
 	ppm_lc_reachability_info.dest_addr[6].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 206;
+	ppm_lc_reachability_info.dest_addr[6].sin_port	      = 206;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[6].sin_addr);
 
 
 	ppm_lc_reachability_info.dest_addr[7].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 207;
+	ppm_lc_reachability_info.dest_addr[7].sin_port	      = 207;
 	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[7].sin_addr);
 	
-	ppm_lc_reachability_info.dest_addr[7].sin_family      = AF_INET;
-	ppm_lc_reachability_info.dest_addr[0].sin_port	      = 208;
-	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[7].sin_addr);
-
+	ppm_lc_reachability_info.dest_addr[8].sin_family      = AF_INET;
+	ppm_lc_reachability_info.dest_addr[8].sin_port	      = 208;
+	inet_pton(AF_INET, "127.0.0.1", &ppm_lc_reachability_info.dest_addr[8].sin_addr);
+	
 }
 
 static int ppm_client_sock_fd;
@@ -101,6 +101,25 @@ READ:
 
         return NULL;
 }
+
+unsigned int
+ppm_client_send_msg_to_ppm(const char *msg, unsigned int msg_size){
+
+	int n_lcs = get_current_no_lc(), i = 1;
+	unsigned int rc = 0;
+
+	for(; i <= n_lcs; i++ ){
+		rc = sendto(ppm_client_sock_fd, msg, msg_size, 0, 
+			(struct sockaddr *)&ppm_lc_reachability_info.dest_addr[i],
+			sizeof(struct sockaddr));
+
+		printf("%s() : %u bytes sent to LC%d\n", __FUNCTION__, rc, i);		
+	}
+
+	return 0;
+}
+
+
 
 int
 ppm_client_init_socket(){
