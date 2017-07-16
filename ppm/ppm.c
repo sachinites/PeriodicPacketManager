@@ -10,8 +10,20 @@ extern void ppm_client_init_lc_ppm_reachability_info();
 extern void ppm_client_init_socket();
 
 
+ppm_outbound_rule_t*
+ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
+
+	return NULL;	
+
+
+}
+
+extern void
+ppm_setup_sockets(const char LC_NO);
+
+
 void
-ppm_init(){
+ppm_init(const char LC_NO){
         static char only_once = 0;
         if(only_once == 0){
                 only_once = 1;
@@ -19,8 +31,8 @@ ppm_init(){
                 ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();
 
 		ppm_client_init_lc_ppm_reachability_info();
-		ppm_client_init_socket();
-		
+
+		ppm_setup_sockets(LC_NO);
         }
         else
                 assert(0);
@@ -59,7 +71,7 @@ ppm_is_outbound_pkt_registered(const char * proto_name,
 }
 
 void
-ppm_init_outbound_protocol_db(const char *proto_name, ppm_outbound_pkt_id_t pkt_max_id){
+ppm_add_new_outbound_protocol_db(const char *proto_name, ppm_outbound_pkt_id_t pkt_max_id){
 
 	assert(ppm_outb_gl_db);
 
@@ -69,9 +81,10 @@ ppm_init_outbound_protocol_db(const char *proto_name, ppm_outbound_pkt_id_t pkt_
 	}	
 	ppm_outbound_protocol_db_t *proto_db = calloc(1,sizeof(ppm_outbound_protocol_db_t));
 	strncpy(proto_db->proto, proto_name, PPM_MAX_PROTO_NAME_SIZE -1);
-	proto_db->proto[strlen(proto_name)] = '\0';
+	proto_db->proto[PPM_MAX_PROTO_NAME_SIZE -1] = '\0';
 	proto_db->protocol_max_pkt_id = pkt_max_id;
 	proto_db->ppm_proto_outbound_rule_list = calloc(pkt_max_id, sizeof(ppm_outbound_rule_t));
+	PPM_ADD_NEW_OUTBOUND_PROTOCOL_DB(proto_db);
 }
 
 bool_t

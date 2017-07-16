@@ -9,15 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include "ppm_client.h"
 
 #define MAX_LINE_CARDS	8
-#define PPM_MAX_RECV_BUFFER	(1024*1024)
+#define PPM_CLIENT_MAX_RECV_BUFFER	(1024*1024)
 
-typedef struct _ppm_lc_reachability_info{
-        struct sockaddr_in dest_addr[MAX_LINE_CARDS + 1];
-} ppm_lc_reachability_info_t;
-
-static ppm_lc_reachability_info_t ppm_lc_reachability_info;
+ppm_lc_reachability_info_t ppm_lc_reachability_info;
 
 
 void
@@ -70,7 +67,7 @@ static int ppm_client_sock_fd;
 
 static int
 get_current_no_lc(){
-	return 2;
+	return 1;
 }
 
 
@@ -88,12 +85,12 @@ ppm_recv_sock_msg(void *arg){
 	    addr_len = 0, 
 	    len = 0;
 
-        char ppm_rec_buff[PPM_MAX_RECV_BUFFER];
+        char ppm_rec_buff[PPM_CLIENT_MAX_RECV_BUFFER];
         struct sockaddr_in ppm_recv_lc_addr;
 	addr_len = sizeof(struct sockaddr);
 
 READ:
-        len = recvfrom(ppm_client_sock_fd, ppm_rec_buff, PPM_MAX_RECV_BUFFER, 0, (struct sockaddr *)&ppm_recv_lc_addr, (socklen_t *)&addr_len);
+        len = recvfrom(ppm_client_sock_fd, ppm_rec_buff, PPM_CLIENT_MAX_RECV_BUFFER, 0, (struct sockaddr *)&ppm_recv_lc_addr, (socklen_t *)&addr_len);
 
         ppm_client_process_sock_msg(ppm_rec_buff, len);
 

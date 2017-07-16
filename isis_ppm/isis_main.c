@@ -10,6 +10,10 @@ main(int argc, char **argv){
 	const char *pkt = "This is LAN L1 LSP PACKET";
 	unsigned int ifindex = 1234;
 
+	/*Intialize client librray*/
+	ppm_init_client_lib();
+	ppm_create_outbound_protocol_db("ISIS", ISIS_PPM_PKT_MAX);
+#if 1
 	ppm_input_struct_t *isis_lan_l1_lsp = 
 		ppm_get_new_ppm_input_structure(ISIS_L1_LSP, 
 						proto_name, 
@@ -46,6 +50,6 @@ main(int argc, char **argv){
 						&ifindex);
 
 	ppm_install_new_outbound_rule(isis_lan_l1_hello);	
-		
+#endif		
 	return 0;
 }

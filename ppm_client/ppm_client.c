@@ -7,6 +7,33 @@
 extern unsigned int 
 ppm_client_send_msg_to_ppm(const char *msg, unsigned int msg_size);
 
+void
+ppm_init_client_lib(){
+	ppm_client_init_lc_ppm_reachability_info();
+	ppm_client_init_socket();
+}
+
+
+void
+ppm_create_outbound_protocol_db(const char *proto_name,
+		ppm_outbound_pkt_id_t pkt_max_id){
+
+	ppm_input_struct_t *ppm_input_struct_info = NULL;
+
+	ppm_msg_hdr_t *ppm_msg_hdr = calloc(1, sizeof(ppm_msg_hdr_t) + 
+					sizeof(ppm_input_struct_t));
+
+	ppm_input_struct_info = (ppm_input_struct_t *)(ppm_msg_hdr + 1);
+
+	ppm_msg_hdr->ppm_msg_type = PPM_ADD_PROTOCOL;
+	ppm_input_struct_info->pkt_id = pkt_max_id;
+	strncpy(ppm_input_struct_info->proto_name, proto_name, PPM_MAX_PROTO_NAME_SIZE -1);
+	ppm_input_struct_info->proto_name[PPM_MAX_PROTO_NAME_SIZE -1] = '\0';
+
+	ppm_client_send_msg_to_ppm((char *)ppm_msg_hdr, sizeof(ppm_msg_hdr_t) + sizeof(ppm_input_struct_t));	
+	free(ppm_msg_hdr);
+}
+
 ppm_input_struct_t *
 ppm_get_new_ppm_input_structure(const ppm_outbound_pkt_id_t pkt_id,
                             const char *proto_name,
@@ -110,12 +137,17 @@ ppm_install_new_outbound_rule(ppm_input_struct_t *ppm_input_struct_info){
 	ppm_msg_hdr_t *ppm_install_msg = 
 			calloc(1, msg_size);
 
+	if(!ppm_install_msg) {
+		printf("%s() : Memory allocation failed\n", __FUNCTION__);
+		return;
+	}
+
 	ppm_install_msg->ppm_msg_type = PPM_INSTALL_NEW_RULE;
 	memcpy(ppm_install_msg + 1, ppm_input_struct_info, msg_size - sizeof(ppm_msg_hdr_t));
 	
 	rc = ppm_client_send_msg_to_ppm((char *)ppm_install_msg, msg_size);	
 	printf("%s() : %u bytes sent to ppm\n", __FUNCTION__, msg_size);
-	 
+	free(ppm_install_msg); 
 }
 
 void

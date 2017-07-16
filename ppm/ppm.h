@@ -56,7 +56,8 @@ typedef struct ppm_outbound_rule{
 
 #define GET_PPM_OUTBOUND_DB_LIST	(ppm_outb_gl_db->ppm_outbound_protocol_db_list)
 
-
+#define PPM_ADD_NEW_OUTBOUND_PROTOCOL_DB(proto_db)	\
+		singly_ll_add_node_by_val(ppm_outb_gl_db->ppm_outbound_protocol_db_list, proto_db);
 
 /*ppm per protocol databse*/
 typedef struct ppm_outbound_protocol_db{
@@ -72,11 +73,11 @@ typedef struct ppm_outbound_gl_db{
 } ppm_outbound_gl_db_t;
 
 void
-ppm_init();
+ppm_init(const char LCNO);
 
 
 void
-ppm_init_outbound_protocol_db(const char *proto_name, ppm_outbound_pkt_id_t pkt_max_id);
+ppm_add_new_outbound_protocol_db(const char *proto_name, ppm_outbound_pkt_id_t pkt_max_id);
 
 /*return 0 on success, 1 on failure*/
 bool_t

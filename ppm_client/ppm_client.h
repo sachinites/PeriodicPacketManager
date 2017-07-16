@@ -3,18 +3,26 @@
 
 #include "ppm_pkt_enums.h"
 #include "../common_str.h"
+#include <netinet/in.h>
 
 typedef void (*pkt_display_fn_t)(char *, unsigned int);
 
+#define MAX_LINE_CARDS  8
+
+typedef struct _ppm_lc_reachability_info{
+        struct sockaddr_in dest_addr[MAX_LINE_CARDS + 1];
+} ppm_lc_reachability_info_t;
+
 /*PPM Input Structure*/
 typedef enum{
-	PPM_INSTALL_NEW_RULE,
-	PPM_REMOVE_PROTOCOL,
-	PPM_DISABLE_PROTOCOL,
-	PPM_ADD_NEW_EGREE_INTF,
-	PPM_REMOVE_EDRESS_INTF,
+	PPM_INSTALL_NEW_RULE	,
+	PPM_ADD_PROTOCOL	,
+	PPM_REMOVE_PROTOCOL	,
+	PPM_DISABLE_PROTOCOL	,
+	PPM_ADD_NEW_EGREE_INTF	,
+	PPM_REMOVE_EDRESS_INTF	,
 	PPM_UPDATE_TIME_INTERVAL,
-	PPM_UPDATE_PERIODICITY,
+	PPM_UPDATE_PERIODICITY	,
 	PPM_UPDATE_PKT_BUFFER	
 } PPM_INPUT_MSG_TYPE;/*Msgs from PPM client to PPM daemon*/
 
@@ -33,6 +41,12 @@ typedef struct _ppm_input_struct{
 	unsigned int ifindex_array[0];
 } ppm_input_struct_t;
 
+void
+ppm_init_client_lib();
+
+void
+ppm_create_outbound_protocol_db(const char *proto_name, 
+				ppm_outbound_pkt_id_t pkt_max_id);
 
 ppm_input_struct_t *
 ppm_get_new_ppm_input_structure(const ppm_outbound_pkt_id_t pkt_id,
