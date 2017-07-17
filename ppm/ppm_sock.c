@@ -56,18 +56,14 @@ READ:
 void
 ppm_setup_sockets(char LC_NO){
 
-     	int sock_fd = 0;
-
-        _pthread_t ppm_comm_thread;
+        _pthread_t ppm_comm_thread;/*ppm Communication thread*/
         int DETACHED =0;
 
-        sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-        if(sock_fd == -1){
+        ppm_sock_fd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+        if(ppm_sock_fd == -1){
                 printf("%s() : THA  socket creation failed\n", __FUNCTION__);
                 return;
         }
-
-        ppm_sock_fd = sock_fd;
 
         if (bind(ppm_sock_fd, (struct sockaddr *)&ppm_lc_reachability_info.dest_addr[(unsigned int)LC_NO], sizeof(struct sockaddr)) == -1){
                 printf("%s() : Error : socket bind failed, errno = %d\n", __FUNCTION__, errno);

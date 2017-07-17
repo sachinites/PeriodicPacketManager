@@ -28,7 +28,7 @@ int
 main(int argc, char **argv){
 
 		
-	LC_NO = atoi(argv[1]);/*To be fetched from argv*/
+	LC_NO = atoi(argv[1]);
 
 	ppm_init(LC_NO);
 		

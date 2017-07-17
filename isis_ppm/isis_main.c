@@ -6,7 +6,7 @@
 int
 main(int argc, char **argv){
 	
-	const char *proto_name = "OSPF";
+	const char *proto_name = "ISIS";
 	const char *pkt = "This is LAN L1 LSP PACKET";
 	unsigned int ifindex = 1234;
 

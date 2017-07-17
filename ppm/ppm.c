@@ -54,9 +54,8 @@ ppm_init(const char LC_NO){
                 only_once = 1;
                 ppm_outb_gl_db = calloc(1,sizeof(ppm_outbound_gl_db_t));
                 ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();
-
+		
 		ppm_client_init_lc_ppm_reachability_info();
-
 		ppm_setup_sockets(LC_NO);
         }
         else
@@ -140,8 +139,9 @@ ppm_free_outbound_rule(ppm_outbound_rule_t *rule){
 	memset(rule, 0 , sizeof(ppm_outbound_rule_t));
 }
 
+#if 0
 static void
-ppm_free_outbound_rule_old(ppm_outbound_rule_t *rule){
+ppm_free_outbound_rule(ppm_outbound_rule_t *rule){
 
 	free(rule->pkt);
 	ll_t *oif_list = rule->oif_list;
@@ -172,6 +172,7 @@ ppm_free_outbound_rule_old(ppm_outbound_rule_t *rule){
 	free(rule->oif_list);
 	memset(rule, 0 , sizeof(ppm_outbound_rule_t));
 }
+#endif
 
 bool_t
 ppm_remove_outbound_rule(const char *proto_name, ppm_outbound_pkt_id_t pkt_id){

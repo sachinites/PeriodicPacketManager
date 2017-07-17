@@ -13,6 +13,12 @@ typedef struct _ppm_lc_reachability_info{
         struct sockaddr_in dest_addr[MAX_LINE_CARDS + 1];
 } ppm_lc_reachability_info_t;
 
+typedef enum{
+	FLOOD,
+	NON_FLOOD
+} FLOOD_BEHAVIOR;
+
+
 /*PPM Input Structure*/
 typedef enum{
 	PPM_INSTALL_NEW_RULE	,

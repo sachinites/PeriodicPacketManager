@@ -13,5 +13,5 @@ typedef enum{
 typedef unsigned int ipv4_addr;
 
 #define MTU_SIZE	1526
-
+#define VLAN_MAX	512
 #endif
