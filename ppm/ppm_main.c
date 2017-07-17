@@ -9,7 +9,7 @@ main_menu(){
 
 	do{
 		printf("***************************\n");
-		printf("Enter Choice : ");
+		printf("Enter Choice : \n");
 		printf("1. ppm_dump_outbound_db\n");
 		int choice;
 		scanf("%d", &choice);

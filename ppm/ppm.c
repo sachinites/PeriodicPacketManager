@@ -12,10 +12,35 @@ extern void ppm_client_init_socket();
 
 ppm_outbound_rule_t*
 ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
+	
+	unsigned int egress_intf_cnt = 0;
+	if(ppm_input_struct_info->pkt_size >= MTU_SIZE){
+		printf("%s() : Warning : Exceeding MTU size, pkt size = %u\n", 
+				__FUNCTION__, ppm_input_struct_info->pkt_size);
+		return;
+	}
 
-	return NULL;	
-
-
+	ppm_outbound_rule_t *new_out_rule = calloc(1, sizeof(ppm_outbound_rule_t));
+	
+	new_out_rule->is_active = FALSE;
+	new_out_rule->pkt_id = ppm_input_struct_info->pkt_id;
+	new_out_rule->pkt = calloc(1, ppm_input_struct_info->pkt_size);
+	memcpy(new_out_rule->pkt, ppm_input_struct_info->pkt, ppm_input_struct_info->pkt_size);
+	new_out_rule->pkt_size = ppm_input_struct_info->pkt_size;
+	new_out_rule->pkt_display_fn = NULL; /*TBD*/
+	new_out_rule->time_interval = ppm_input_struct_info->time_interval;
+	new_out_rule->is_periodic = ppm_input_struct_info->is_periodic;
+	
+	new_out_rule->emit_fn = NULL;
+	new_out_rule->oif_list = PPM_INIT_NEW_OIF_LIST;
+	for(; egress_intf_cnt < ppm_input_struct_info->egress_intf_cnt; 
+		egress_intf_cnt++){
+		
+		PPM_ADD_IFINDEX_TO_OIF_LIST(new_out_rule, 
+			(void *)ppm_input_struct_info->ifindex_array[egress_intf_cnt]);
+	}
+	
+	return new_out_rule;
 }
 
 extern void
@@ -59,14 +84,15 @@ ppm_is_outbound_pkt_registered(const char * proto_name,
 	if(!(_proto_db = ppm_is_proto_registered(proto_name)))
 		return NULL;
 	
+	*proto_db = _proto_db;
 	if(pkt_id >= (_proto_db)->protocol_max_pkt_id)
 		return NULL;
 	
 	pkt_out_rule = &((_proto_db)->ppm_proto_outbound_rule_list[pkt_id]);	
-	if(pkt_out_rule->is_active){
-		*proto_db = _proto_db;
+
+	if(IS_RULE_ACTIVE(pkt_out_rule))
 		return pkt_out_rule;
-	}
+
 	return NULL;
 }
 
@@ -93,8 +119,8 @@ ppm_add_outbound_rule(const char *proto_name, ppm_outbound_rule_t *outbound_rule
 	assert(ppm_outb_gl_db);
 	ppm_outbound_protocol_db_t *proto_db = NULL;
 
-	if(!ppm_is_outbound_pkt_registered(proto_name, outbound_rule->pkt_id, &proto_db)){
-		printf("%s() : Error : Attempt to add a duplicate rule for protocol : %s, pkt_id : %s",
+	if(ppm_is_outbound_pkt_registered(proto_name, outbound_rule->pkt_id, &proto_db)){
+		printf("%s() : Error : Attempt to add a duplicate rule for protocol : %s, pkt_id : %s\n",
 			 __FUNCTION__, proto_name, ppm_get_str_enum(outbound_rule->pkt_id));
 		return FALSE;
 	}
@@ -103,8 +129,19 @@ ppm_add_outbound_rule(const char *proto_name, ppm_outbound_rule_t *outbound_rule
 	return TRUE;
 }
 
+
+
 void
 ppm_free_outbound_rule(ppm_outbound_rule_t *rule){
+
+	free(rule->pkt);
+	delete_singly_ll(rule->oif_list);
+	free(rule->oif_list);
+	memset(rule, 0 , sizeof(ppm_outbound_rule_t));
+}
+
+static void
+ppm_free_outbound_rule_old(ppm_outbound_rule_t *rule){
 
 	free(rule->pkt);
 	ll_t *oif_list = rule->oif_list;
@@ -199,7 +236,8 @@ ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 		head = GET_HEAD_SINGLY_LL(rule->oif_list);
 		for(; i < GET_NODE_COUNT_SINGLY_LL(rule->oif_list); i++){
 			intf = (ppm_in_out_if_t *)head->data;
-			ppm_dump_in_out_intf(intf);
+			//ppm_dump_in_out_intf(intf);
+			printf("	OIF #%u, ifindex = %u\n", i, (unsigned int)intf);
 			head = GET_NEXT_NODE_SINGLY_LL(head);
 		}	
 	}
@@ -210,7 +248,7 @@ ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 	if(rule->pkt_display_fn)
 		rule->pkt_display_fn(rule->pkt, rule->pkt_size);
 	else
-		printf("pkt display fn not registered with PPM");
+		printf("pkt display fn not registered with PPM\n");
 }
 
 void
@@ -233,7 +271,10 @@ ppm_dump_outbound_db(){
 
 		for(j = 0; j < proto_db->protocol_max_pkt_id; j++){
 			pkt_out_rule = GET_PROTO_RULE(proto_db, j);
-			ppm_dump_outbound_rule(pkt_out_rule);
+			if(IS_RULE_ACTIVE(pkt_out_rule)){
+				ppm_dump_outbound_rule(pkt_out_rule);
+				printf(" ============ \n\n");
+			}
 		}
 		head = GET_NEXT_NODE_SINGLY_LL(head);
 	}

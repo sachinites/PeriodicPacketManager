@@ -60,11 +60,10 @@ ppm_process_aplication_msg(char *msg, unsigned int msg_size){
 		
 			/*Sanity checks has been passed, now install the rule in PPM*/
 
-			printf("%s() : PPM time to install new rule proto = %s, pkt_id = %s\n", 
-				__FUNCTION__, ppm_input_struct_info->proto_name, 
-				ppm_get_str_enum(ppm_input_struct_info->pkt_id));
-
 			ppm_new_rule = ppm_get_new_outbound_rule(ppm_input_struct_info);
+
+			/*Let us Activate the rule, if not required, it has to deactivated explicitely*/
+			ACTIVATE_RULE(ppm_new_rule);
 
 			if(!ppm_new_rule){
 				printf("%s() : New Outbound Rule memory allocation failed\n", __FUNCTION__);
@@ -72,7 +71,7 @@ ppm_process_aplication_msg(char *msg, unsigned int msg_size){
 				
 			}
 
-			if(ppm_add_outbound_rule(ppm_input_struct_info->proto_name, ppm_new_rule)){
+			if(!ppm_add_outbound_rule(ppm_input_struct_info->proto_name, ppm_new_rule)){
 				printf("%s() : PPM failed to install new rule, proto  = %s, pkt_id = %s\n",
 						__FUNCTION__, ppm_input_struct_info->proto_name,
 						ppm_get_str_enum(ppm_input_struct_info->pkt_id));

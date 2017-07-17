@@ -50,6 +50,7 @@ typedef struct ppm_outbound_rule{
 #define ACTIVATE_RULE(rule_ptr)	(rule_ptr->is_active = 1)
 
 #define DE_ACTIVATE_RULE(rule_ptr)	(rule_ptr->is_active = 0)
+#define IS_RULE_ACTIVE(rule_ptr)	(rule_ptr->is_active == 1)
 
 #define GET_PROTO_RULE(proto_db_ptr, pkt_id)	\
 		(&proto_db_ptr->ppm_proto_outbound_rule_list[pkt_id])
@@ -58,6 +59,13 @@ typedef struct ppm_outbound_rule{
 
 #define PPM_ADD_NEW_OUTBOUND_PROTOCOL_DB(proto_db)	\
 		singly_ll_add_node_by_val(ppm_outb_gl_db->ppm_outbound_protocol_db_list, proto_db);
+
+#define PPM_INIT_NEW_OIF_LIST	(init_singly_ll())
+
+/*This macro assumes that ifindex is unsigned int size only*/
+#define PPM_ADD_IFINDEX_TO_OIF_LIST(rule_ptr, data_ptr)	\
+		(singly_ll_add_node_by_val(rule_ptr->oif_list, data_ptr))	
+
 
 /*ppm per protocol databse*/
 typedef struct ppm_outbound_protocol_db{
