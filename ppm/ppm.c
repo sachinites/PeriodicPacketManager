@@ -4,6 +4,8 @@
 #include "../libs/LinkedListApi.h"
 #include <stdio.h>
 #include <string.h>
+#include "ppm_sched.h"
+
 
 ppm_outbound_gl_db_t* ppm_outb_gl_db;
 extern void ppm_client_init_lc_ppm_reachability_info();
@@ -46,17 +48,17 @@ ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
 extern void
 ppm_setup_sockets(const char LC_NO);
 
-
 void
 ppm_init(const char LC_NO){
         static char only_once = 0;
         if(only_once == 0){
                 only_once = 1;
                 ppm_outb_gl_db = calloc(1,sizeof(ppm_outbound_gl_db_t));
-                ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();
-		
+                ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();	
 		ppm_client_init_lc_ppm_reachability_info();
 		ppm_setup_sockets(LC_NO);
+		ppm_setup_scheduler();
+		ppm_scheduler_start();
         }
         else
                 assert(0);

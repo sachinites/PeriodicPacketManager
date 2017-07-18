@@ -4,8 +4,12 @@
 #include <stdio.h>
 
 extern char LC_NO;
-ppm_outbound_rule_t*
+
+extern ppm_outbound_rule_t*
 ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info);
+
+extern void
+ppm_schedule_outbound_rule(ppm_outbound_rule_t *ppm_outbound_rule);
 
 static void
 _ppm_install_new_rule(ppm_msg_hdr_t *ppm_client_msg){
@@ -65,6 +69,9 @@ _ppm_install_new_rule(ppm_msg_hdr_t *ppm_client_msg){
 	printf("%s() : New outbound rule for proto  = %s, pkt_id = %s Installed\n",
 			__FUNCTION__, ppm_input_struct_info->proto_name,
 			ppm_get_str_enum(ppm_input_struct_info->pkt_id));
+
+
+	ppm_schedule_outbound_rule(ppm_new_rule);
 }
 
 

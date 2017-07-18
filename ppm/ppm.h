@@ -4,6 +4,8 @@
 #include "../ppm_client/ppm_pkt_enums.h"
 #include "../common_str.h"
 #include "../ppm_client/ppm_client.h"
+#include "../libs/WheelTimer.h"
+
 
 typedef void (*emit_fn_t)(char *, unsigned int, unsigned int *, unsigned int);
 
@@ -76,8 +78,12 @@ typedef struct ppm_outbound_protocol_db{
 
 
 /*ppm global database*/
+
+typedef wheel_timer_t	ppm_scheduler_t;
+
 typedef struct ppm_outbound_gl_db{
 	ll_t *ppm_outbound_protocol_db_list; /*key is protocol name*/
+	ppm_scheduler_t *scheduler;
 } ppm_outbound_gl_db_t;
 
 void
