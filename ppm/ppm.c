@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "ppm_sched.h"
-
+#include "ppm_emitter.h"
 
 ppm_outbound_gl_db_t* ppm_outb_gl_db;
 extern void ppm_client_init_lc_ppm_reachability_info();
@@ -16,6 +16,8 @@ ppm_outbound_rule_t*
 ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
 	
 	unsigned int egress_intf_cnt = 0;
+	oif_info_t *oif = NULL;
+
 	if(ppm_input_struct_info->pkt_size >= MTU_SIZE){
 		printf("%s() : Warning : Exceeding MTU size, pkt size = %u\n", 
 				__FUNCTION__, ppm_input_struct_info->pkt_size);
@@ -38,8 +40,10 @@ ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
 	for(; egress_intf_cnt < ppm_input_struct_info->egress_intf_cnt; 
 		egress_intf_cnt++){
 		
-		PPM_ADD_IFINDEX_TO_OIF_LIST(new_out_rule, 
-			(void *)ppm_input_struct_info->ifindex_array[egress_intf_cnt]);
+		oif = calloc(1, sizeof(oif_info_t));	
+		oif->ifindex = ppm_input_struct_info->ifindex_array[egress_intf_cnt];
+		oif->wt_elem = NULL; /*Will be created on instllation of Rule into Scheduler*/
+		PPM_ADD_IFINDEX_TO_OIF_LIST(new_out_rule, (void *)oif);
 	}
 	
 	return new_out_rule;
@@ -134,11 +138,13 @@ ppm_add_outbound_rule(const char *proto_name, ppm_outbound_rule_t *outbound_rule
 
 void
 ppm_free_outbound_rule(ppm_outbound_rule_t *rule){
-
+	/*Need to be re-written*/
+#if 0
 	free(rule->pkt);
 	delete_singly_ll(rule->oif_list);
 	free(rule->oif_list);
 	memset(rule, 0 , sizeof(ppm_outbound_rule_t));
+#endif
 }
 
 #if 0
@@ -225,7 +231,7 @@ void
 ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 
 	singly_ll_node_t *head = NULL;
-	ppm_in_out_if_t *intf = NULL;
+	oif_info_t *intf = NULL;
 	unsigned int i = 0;
 
 	printf("is_active : %s\n", rule->is_active ? "TRUE" : "FALSE");
@@ -238,9 +244,9 @@ ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 		printf("OIF list : #oifs : %u\n", GET_OIF_COUNT(rule));
 		head = GET_HEAD_SINGLY_LL(rule->oif_list);
 		for(; i < GET_NODE_COUNT_SINGLY_LL(rule->oif_list); i++){
-			intf = (ppm_in_out_if_t *)head->data;
+			intf = (oif_info_t *)head->data;
 			//ppm_dump_in_out_intf(intf);
-			printf("	OIF #%u, ifindex = %u\n", i, (unsigned int)intf);
+			printf("	OIF #%u, ifindex = %u\n", i, (unsigned int)intf->ifindex);
 			head = GET_NEXT_NODE_SINGLY_LL(head);
 		}	
 	}
@@ -252,6 +258,7 @@ ppm_dump_outbound_rule(const ppm_outbound_rule_t *rule){
 		rule->pkt_display_fn(rule->pkt, rule->pkt_size);
 	else
 		printf("pkt display fn not registered with PPM\n");
+
 }
 
 void
@@ -281,4 +288,8 @@ ppm_dump_outbound_db(){
 		}
 		head = GET_NEXT_NODE_SINGLY_LL(head);
 	}
+
+	printf("PPM dumping the PPM scheduler : \n\n");
+
+	ppm_dump_scheduler();
 }

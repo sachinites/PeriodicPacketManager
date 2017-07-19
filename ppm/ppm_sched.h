@@ -15,5 +15,7 @@ ppm_scheduler_t* ppm_get_scheduler();
 void
 ppm_scheduler_start();
 
+void
+ppm_dump_scheduler();
 
 #endif

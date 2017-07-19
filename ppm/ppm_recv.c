@@ -9,7 +9,7 @@ extern ppm_outbound_rule_t*
 ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info);
 
 extern void
-ppm_schedule_outbound_rule(ppm_outbound_rule_t *ppm_outbound_rule);
+ppm_schedule_outbound_rule(const char *proto_name, ppm_outbound_rule_t *ppm_outbound_rule);
 
 static void
 _ppm_install_new_rule(ppm_msg_hdr_t *ppm_client_msg){
@@ -71,7 +71,7 @@ _ppm_install_new_rule(ppm_msg_hdr_t *ppm_client_msg){
 			ppm_get_str_enum(ppm_input_struct_info->pkt_id));
 
 
-	ppm_schedule_outbound_rule(ppm_new_rule);
+	ppm_schedule_outbound_rule(ppm_input_struct_info->proto_name, ppm_new_rule);
 }
 
 

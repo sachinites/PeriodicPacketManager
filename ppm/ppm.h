@@ -33,6 +33,10 @@ typedef struct ppm_in_out_if{
 	unsigned int ref_count;
 } ppm_in_out_if_t;
 
+typedef struct oif_info_t_{
+	unsigned int ifindex;
+	wheel_timer_elem_t *wt_elem;
+} oif_info_t;
 
 typedef struct ppm_outbound_rule{
 	bool_t is_active;	/*Disable Or enable this rule*/
@@ -44,7 +48,7 @@ typedef struct ppm_outbound_rule{
 	bool_t is_periodic;
 	emit_fn_t emit_fn;
 	unsigned int ppm_cumulative_out_sent_stats;
-	ll_t *oif_list;	/*data is ppm_outbound_oif_t*/
+	ll_t *oif_list;	/*list of oif_info_t structures*/
 } ppm_outbound_rule_t;
 
 #define GET_OIF_COUNT(rule_ptr)(GET_NODE_COUNT_SINGLY_LL(rule_ptr->oif_list))
@@ -67,7 +71,6 @@ typedef struct ppm_outbound_rule{
 /*This macro assumes that ifindex is unsigned int size only*/
 #define PPM_ADD_IFINDEX_TO_OIF_LIST(rule_ptr, data_ptr)	\
 		(singly_ll_add_node_by_val(rule_ptr->oif_list, data_ptr))	
-
 
 /*ppm per protocol databse*/
 typedef struct ppm_outbound_protocol_db{

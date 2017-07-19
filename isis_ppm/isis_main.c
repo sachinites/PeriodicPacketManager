@@ -8,7 +8,7 @@ main(int argc, char **argv){
 	
 	const char *proto_name = "ISIS";
 	const char *pkt = "This is LAN L1 LSP PACKET";
-	unsigned int ifindex = 1234;
+	unsigned int ifindex[4] = {1,2,3,4};
 
 	/*Intialize client librray*/
 	ppm_init_client_lib();
@@ -20,9 +20,9 @@ main(int argc, char **argv){
 						proto_name, 
 						strlen(pkt), 
 						pkt,
-						5,
+						10,
 						1,
-						1,
+						4,
 						&ifindex);
 
 	ppm_install_new_outbound_rule(isis_lan_l1_lsp);	
@@ -32,9 +32,9 @@ main(int argc, char **argv){
 						proto_name, 
 						strlen(pkt), 
 						pkt,
-						5,
+						3,
 						1,
-						1,
+						4,
 						&ifindex);
 
 	ppm_install_new_outbound_rule(isis_lan_l2_lsp);	
@@ -45,9 +45,9 @@ main(int argc, char **argv){
 						proto_name, 
 						strlen(pkt), 
 						pkt,
-						5,
+						4,
 						1,
-						1,
+						4,
 						&ifindex);
 
 	ppm_install_new_outbound_rule(isis_lan_l1_hello);	
