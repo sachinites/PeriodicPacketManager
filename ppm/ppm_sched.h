@@ -18,4 +18,13 @@ ppm_scheduler_start();
 void
 ppm_dump_scheduler();
 
+#define PPM_SCHEDULE_OUTBOUND_PKT(wt_elem)	\
+	register_app_event(ppm_get_scheduler(), \
+	wt_elem_temp.app_callback,		\
+	wt_elem_temp.arg,			\
+	wt_elem_temp.arg_size,			\
+	wt_elem_temp.time_interval,		\
+	wt_elem_temp.is_recurrence)
+
+
 #endif

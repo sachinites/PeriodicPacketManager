@@ -11,6 +11,7 @@ ppm_outbound_gl_db_t* ppm_outb_gl_db;
 extern void ppm_client_init_lc_ppm_reachability_info();
 extern void ppm_client_init_socket();
 
+#define PPM_THREAD_POOL_SIZE	10
 
 ppm_outbound_rule_t*
 ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
@@ -52,20 +53,27 @@ ppm_get_new_outbound_rule(const ppm_input_struct_t *ppm_input_struct_info){
 extern void
 ppm_setup_sockets(const char LC_NO);
 
+
+extern blocked_pool_t gl_blocked_th_pool;
+
+static void
+ppm_init_thread_lib(){
+	init_blocked_pool(&gl_blocked_th_pool, PPM_THREAD_POOL_SIZE);	
+
+}
+
 void
 ppm_init(const char LC_NO){
-        static char only_once = 0;
-        if(only_once == 0){
-                only_once = 1;
-                ppm_outb_gl_db = calloc(1,sizeof(ppm_outbound_gl_db_t));
-                ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();	
-		ppm_client_init_lc_ppm_reachability_info();
-		ppm_setup_sockets(LC_NO);
-		ppm_setup_scheduler();
-		ppm_scheduler_start();
-        }
-        else
-                assert(0);
+	static char only_once = 0;
+	assert(!only_once);
+	only_once = 1;
+	ppm_outb_gl_db = calloc(1,sizeof(ppm_outbound_gl_db_t));
+	ppm_outb_gl_db->ppm_outbound_protocol_db_list = init_singly_ll();	
+	ppm_client_init_lc_ppm_reachability_info();
+	ppm_init_thread_lib();
+	ppm_setup_sockets(LC_NO);
+	ppm_setup_scheduler();
+	ppm_scheduler_start();
 }
 
 ppm_outbound_protocol_db_t *

@@ -7,7 +7,6 @@ PPM_LIBS=../libs/libsulibs.a
 PPM_CLIENT_LIBS=../ppm_client/libppm_client.a
 INCLUDES=-I . -I ../libs -I ../ppm_client
 TARGET:exe ${PPM_LIBS} ${PPM_CLIENT_LIBS}
-
 ppm.o:ppm.c
 	gcc -g -c ${INCLUDES} ppm.c -o ppm.o
 ppm_main.o:ppm_main.c
@@ -20,7 +19,6 @@ ppm_sched.o:ppm_sched.c
 	gcc -g -c ${INCLUDES} ppm_sched.c -o ppm_sched.o
 ppm_emitter.o:ppm_emitter.c
 	gcc -g -c ${INCLUDES} ppm_emitter.c -o ppm_emitter.o
-
 ${PPM_LIBS}:
 	(cd ../libs; make)
 ${PPM_CLIENT_LIBS}:

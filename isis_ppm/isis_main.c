@@ -1,7 +1,7 @@
-
 #include "../ppm_client/ppm_client.h"
 #include "../ppm_client/ppm_pkt_enums.h"
 #include <string.h>
+#include <stdlib.h>
 
 int
 main(int argc, char **argv){
@@ -25,7 +25,8 @@ main(int argc, char **argv){
 						4,
 						&ifindex);
 
-	ppm_install_new_outbound_rule(isis_lan_l1_lsp);	
+	ppm_install_new_outbound_rule(isis_lan_l1_lsp);
+	free(isis_lan_l1_lsp);	
 	
 	ppm_input_struct_t *isis_lan_l2_lsp = 
 		ppm_get_new_ppm_input_structure(ISIS_L2_LSP, 
@@ -38,8 +39,8 @@ main(int argc, char **argv){
 						&ifindex);
 
 	ppm_install_new_outbound_rule(isis_lan_l2_lsp);	
-		
-		
+	free(isis_lan_l2_lsp);	
+	
 	ppm_input_struct_t *isis_lan_l1_hello = 
 		ppm_get_new_ppm_input_structure(ISIS_LAN_L1_HELLO, 
 						proto_name, 
@@ -50,7 +51,8 @@ main(int argc, char **argv){
 						4,
 						&ifindex);
 
-	ppm_install_new_outbound_rule(isis_lan_l1_hello);	
+	ppm_install_new_outbound_rule(isis_lan_l1_hello);
+	free(isis_lan_l1_hello);
 #endif		
 	return 0;
 }

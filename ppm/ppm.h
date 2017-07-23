@@ -22,6 +22,7 @@ typedef struct oif_recv_stats_per_proto{
 	unsigned int recv_stats;
 } if_recv_stats_per_proto_t;
 
+#if 1
 typedef struct ppm_in_out_if{
 	mac_addr_t src_mac;
 	mac_addr_t dst_mac;
@@ -32,6 +33,7 @@ typedef struct ppm_in_out_if{
 	if_recv_stats_per_proto_t recv_stats[PPM_MAX_PKT_ID];
 	unsigned int ref_count;
 } ppm_in_out_if_t;
+#endif
 
 typedef struct oif_info_t_{
 	unsigned int ifindex;

@@ -100,8 +100,8 @@ singly_ll_remove_node(ll_t *ll, singly_ll_node_t *node){
 			continue;
 		}
 		
-		GET_NEXT_NODE_SINGLY_LL(prev) = GET_NEXT_NODE_SINGLY_LL(head);
-		GET_NEXT_NODE_SINGLY_LL(head) = NULL;
+		prev->next = GET_NEXT_NODE_SINGLY_LL(head);
+		head->next = NULL;
 		DEC_NODE_COUNT_SINGLY_LL(ll);
 		node->next = NULL;
 		return 0;	
@@ -217,6 +217,16 @@ reverse_singly_ll(ll_t *ll){
    ll->head = p1;
    return;
 }
+
+void
+delete_singly_ll2(ll_t *ll){
+
+	singly_ll_node_t *curr;		
+	SAFE_LOOP_LINKED_LIST(ll, curr){
+		singly_ll_delete_node(ll, curr);
+	}
+}
+
 
 void
 delete_singly_ll(ll_t *ll){
